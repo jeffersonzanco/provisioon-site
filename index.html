@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROVISIOON - Smart Access Control para Hotéis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #334155;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #06b6d4;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #06b6d4;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #06b6d4;
+            border: 2px solid #06b6d4;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #06b6d4;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #f1f5f9;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 4rem 0;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #f1f5f9;
+        }
+
+        .step p {
+            color: #cbd5e1;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 4rem 0;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: #06b6d4;
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(6, 182, 212, 0.2);
+        }
+
+        .pricing-card.featured::before {
+            content: "⭐ MAIS POPULAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #f1f5f9;
+        }
+
+        .pricing-card .subtitle {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #06b6d4;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-period {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .features-list li {
+            padding: 0.5rem 0;
+            color: #cbd5e1;
+            border-bottom: 1px solid #334155;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .form-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #f1f5f9;
+        }
+
+        .form-section p {
+            text-align: center;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            color: #f1f5f9;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #64748b;
+        }
+
+        .form-section .btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        /* Messages */
+        .message {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            color: #86efac;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(14, 165, 233, 0.1) 100%);
+            border: 1px solid #06b6d4;
+            border-radius: 0.75rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+            padding: 2rem;
+            text-align: center;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🔐 PROVISIOON</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">Como Funciona</a></li>
+                <li><a href="#pricing">Preços</a></li>
+                <li><a href="#register">Registrar</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Smart Access Control para Hotéis Modernos</h1>
+            <p>Substitua chaves físicas por acesso digital seguro. Hóspedes recebem links de acesso com tempo limitado via email e SMS.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('register').scrollIntoView({behavior: 'smooth'})">Começar Agora</button>
+                <button class="btn btn-secondary">Assistir Demo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Recursos Poderosos</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Chaves Digitais Seguras</h3>
+                    <p>Links de acesso com tempo limitado e expiração automática</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📧</div>
+                    <h3>Multi-Canal</h3>
+                    <p>Notificações por SMS e Email para os hóspedes</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dashboard Admin</h3>
+                    <p>Gerencie hóspedes, quartos e logs de acesso</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Segurança Empresarial</h3>
+                    <p>Criptografia TLS e protocolo MQTT</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Ativação Instantânea</h3>
+                    <p>Controle de porta em tempo real via ESP32</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Expiração Automática</h3>
+                    <p>Chaves expiram automaticamente no checkout</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Como Funciona</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Registrar Hóspede</h3>
+                    <p>Adicione informações do hóspede e número do quarto</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Enviar Chaves</h3>
+                    <p>Sistema envia links via SMS & Email</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Hóspede Clica</h3>
+                    <p>Hóspede abre o link no celular</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Porta Abre</h3>
+                    <p>Hóspede toca botão para abrir/fechar</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Preços Simples</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <p class="subtitle">Para testar</p>
+                    <div class="price">$99</div>
+                    <p class="price-period">/mês</p>
+                    <ul class="features-list">
+                        <li>✓ Até 10 quartos</li>
+                        <li>✓ Acesso digital básico</li>
+                        <li>✓ Email + SMS</li>
+                        <li>✗ Sem dashboard</li>
+                    </ul>
+                    <button class="btn btn-secondary">Começar Agora</button>
+                </div>
+
+                <div class="pricing-card featured">
+                    <h3>Professional</h3>
+                    <p class="subtitle">Para hotéis em crescimento</p>
+                    <div class="price">$250</div>
+                    <p class="price-period">/mês</p>
+                    <ul class="features-list">
+                        <li>✓ Até 100 quartos</li>
+                        <li>✓ Dashboard admin completo</li>
+                        <li>✓ Logs de acesso</li>
+                        <li>✓ Email + SMS</li>
+                        <li>✓ Suporte por email</li>
+                        <li>✓ API para integrações</li>
+                    </ul>
+                    <button class="btn btn-primary">Começar Agora</button>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <p class="subtitle">Para grandes redes</p>
+                    <div class="price">$500</div>
+                    <p class="price-period">/mês</p>
+                    <ul class="features-list">
+                        <li>✓ Quartos ilimitados</li>
+                        <li>✓ Tudo do Professional</li>
+                        <li>✓ Suporte 24/7 dedicado</li>
+                        <li>✓ Integrações customizadas</li>
+                        <li>✓ SLA garantido</li>
+                    </ul>
+                    <button class="btn btn-secondary">Falar com Vendedor</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section id="register">
+        <div class="container">
+            <div class="form-section">
+                <h2>Registrar Hóspede</h2>
+                <p>Envie chaves digitais instantaneamente</p>
+
+                <div id="successMessage" class="message success"></div>
+                <div id="errorMessage" class="message error"></div>
+
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label>Nome do Hóspede</label>
+                        <input type="text" name="name" placeholder="Digite o nome do hóspede" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📧 Endereços de Email</label>
+                        <input type="email" name="email1" placeholder="Email 1">
+                        <input type="email" name="email2" placeholder="Email 2" style="margin-top: 0.5rem;">
+                        <input type="email" name="email3" placeholder="Email 3" style="margin-top: 0.5rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>📱 Números de Telefone</label>
+                        <input type="tel" name="phone1" placeholder="Telefone 1">
+                        <input type="tel" name="phone2" placeholder="Telefone 2" style="margin-top: 0.5rem;">
+                        <input type="tel" name="phone3" placeholder="Telefone 3" style="margin-top: 0.5rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>🚪 Números de Quarto</label>
+                        <input type="number" name="room1" placeholder="Quarto 1">
+                        <input type="number" name="room2" placeholder="Quarto 2" style="margin-top: 0.5rem;">
+                        <input type="number" name="room3" placeholder="Quarto 3" style="margin-top: 0.5rem;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Enviar Chaves Digitais →</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Pronto para Transformar seu Hotel?</h2>
+            <p>Junte-se aos hotéis que usam PROVISIOON para acesso seguro e moderno</p>
+            <button class="btn btn-primary" onclick="document.getElementById('register').scrollIntoView({behavior: 'smooth'})">Comece seu Teste Gratuito</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 PROVISIOON. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const successMsg = document.getElementById('successMessage');
+        const errorMsg = document.getElementById('errorMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear messages
+            successMsg.classList.remove('show');
+            errorMsg.classList.remove('show');
+
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                emails: [formData.get('email1'), formData.get('email2'), formData.get('email3')].filter(Boolean),
+                phones: [formData.get('phone1'), formData.get('phone2'), formData.get('phone3')].filter(Boolean),
+                rooms: [formData.get('room1'), formData.get('room2'), formData.get('room3')].filter(Boolean)
+            };
+
+            // Validation
+            if (!data.name.trim()) {
+                showError('Por favor, digite o nome do hóspede');
+                return;
+            }
+            if (data.emails.length === 0) {
+                showError('Por favor, digite pelo menos um email');
+                return;
+            }
+            if (data.phones.length === 0) {
+                showError('Por favor, digite pelo menos um telefone');
+                return;
+            }
+            if (data.rooms.length === 0) {
+                showError('Por favor, digite pelo menos um número de quarto');
+                return;
+            }
+
+            try {
+                // Send to your API endpoint
+                const response = await fetch('/api/register-guest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        guestName: data.name,
+                        emails: data.emails,
+                        phones: data.phones,
+                        roomNumbers: data.rooms
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao enviar chaves digitais');
+                }
+
+                showSuccess(`✅ Chaves digitais enviadas para os quartos ${data.rooms.join(', ')}!`);
+                form.reset();
+            } catch (error) {
+                showError(error.message || 'Erro ao enviar chaves digitais');
+            }
+        });
+
+        function showSuccess(message) {
+            successMsg.textContent = message;
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 5000);
+        }
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+            setTimeout(() => errorMsg.classList.remove('show'), 5000);
+        }
+    </script>
+</body>
+</html>
