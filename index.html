@@ -598,7 +598,7 @@
                 <div id="successMessage" class="message success"></div>
                 <div id="errorMessage" class="message error"></div>
 
-                <form id="registrationForm">
+<form id="registrationForm" onsubmit="handleRegistration(event); return false;">
                     <div class="form-group">
                         <label>Nome do Hóspede</label>
                         <input type="text" name="name" placeholder="Digite o nome do hóspede" required>
@@ -646,58 +646,52 @@
             <p>&copy; 2024 PROVISIOON. Todos os direitos reservados.</p>
         </div>
     </footer>
-
-    <script>
+    
         <script>
-  const form = document.getElementById('registrationForm');
-  const successMsg = document.getElementById('successMessage');
-  const errorMsg = document.getElementById('errorMessage');
+  async function handleRegistration(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('registrationForm');
+    const successMsg = document.getElementById('successMessage');
+    const errorMsg = document.getElementById('errorMessage');
+    
+    if(successMsg) successMsg.classList.remove('show');
+    if(errorMsg) errorMsg.classList.remove('show');
 
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // NUNCA recarrega a página
+    const fd = new FormData(form);
+    const payload = {
+      name: fd.get('name') || 'Hóspede',
+      emails: [fd.get('email1'), fd.get('email2'), fd.get('email3')].filter(v => v),
+      phones: [fd.get('phone1'), fd.get('phone2'), fd.get('phone3')].filter(v => v)
+    };
 
-      successMsg?.classList.remove('show');
-      errorMsg?.classList.remove('show');
+    try {
+      const r = await fetch('https://provisioon-backend-1.onrender.com/api/register-guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-      const fd = new FormData(form);
-
-      const name = fd.get('name') || 'Hóspede';
-
-      // Coleta todos os emails e telefones preenchidos
-      const emails = ['email1','email2','email3']
-        .map(k => fd.get(k))
-        .filter(v => v && v.trim() !== '');
-
-      const phones = ['phone1','phone2','phone3']
-        .map(k => fd.get(k))
-        .filter(v => v && v.trim() !== '');
-
-      if (phones.length === 0 && emails.length === 0) {
-        errorMsg.textContent = 'Preencha pelo menos um email ou telefone';
-        errorMsg.classList.add('show');
-        return;
-      }
-
-      try {
-        const r = await fetch(
-          'https://provisioon-backend-1.onrender.com/api/register-guest',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, emails, phones })
-          }
-        );
-
-        if (!r.ok) throw new Error('Falha no envio');
-
-        successMsg.textContent = '✅ Chave enviada para os hóspedes';
-        successMsg.classList.add('show');
+      if (r.ok) {
+        if(successMsg) {
+          successMsg.textContent = '✅ Chaves enviadas com sucesso!';
+          successMsg.classList.add('show');
+        }
         form.reset();
-      } catch (err) {
-        errorMsg.textContent = '❌ Erro ao enviar chaves';
+      } else {
+        if(errorMsg) {
+          errorMsg.textContent = '❌ Erro no servidor. Verifique os dados.';
+          errorMsg.classList.add('show');
+        }
+      }
+    } catch (err) {
+      if(errorMsg) {
+        errorMsg.textContent = '❌ Erro de conexão com o backend.';
         errorMsg.classList.add('show');
       }
-    });
+    }
+    return false;
   }
 </script>
+</body>
+</html>
