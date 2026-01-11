@@ -659,85 +659,31 @@
             successMsg.classList.remove('show');
             errorMsg.classList.remove('show');
 
-            const formData = new FormData(form);
-            const data = {
-                name: formData.get('name'),
-                emails: [formData.get('email1'), formData.get('email2'), formData.get('email3')].filter(Boolean),
-                phones: [formData.get('phone1'), formData.get('phone2'), formData.get('phone3')].filter(Boolean),
-                rooms: [formData.get('room1'), formData.get('room2'), formData.get('room3')].filter(Boolean)
-            };
+           const formData = new FormData(form);
+    const data = {
+      name: formData.get('name') || formData.get('fullName') || 'Hóspede',
+      phone: formData.get('phone') || formData.get('phone-number') || ''
+    };
 
-            // Validation
-            if (!data.name.trim()) {
-                showError('Por favor, digite o nome do hóspede');
-                return;
-            }
-            if (data.emails.length === 0) {
-                showError('Por favor, digite pelo menos um email');
-                return;
-            }
-            if (data.phones.length === 0) {
-                showError('Por favor, digite pelo menos um telefone');
-                return;
-            }
-            if (data.rooms.length === 0) {
-                showError('Por favor, digite pelo menos um número de quarto');
-                return;
-            }
-
-            try {
-                // Send to your API endpoint
-                // Enviar para o seu backend real no Render
+    try {
+      // Chamando o seu backend real no Render
       const response = await fetch('https://provisioon-backend-1.onrender.com/api/register-guest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: form.querySelector('[name="name"]')?.value || "Hóspede",
-          phone: form.querySelector('[name="phone"]')?.value || ""
-        }),
+        body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('Erro ao conectar com o servidor de SMS');
+      if (response.ok) {
+        showSuccess('✅ Chave digital enviada com sucesso por SMS!');
+        form.reset();
+      } else {
+        const errorData = await response.json();
+        showError('❌ Erro: ' + (errorData.error || 'Falha no envio'));
       }
-
-      const result = await response.json();
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        guestName: data.name,
-                        emails: data.emails,
-                        phones: data.phones,
-                        roomNumbers: data.rooms
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Erro ao enviar chaves digitais');
-                }
-
-                showSuccess(`✅ Chaves digitais enviadas para os quartos ${data.rooms.join(', ')}!`);
-                form.reset();
-            } catch (error) {
-                showError(error.message || 'Erro ao enviar chaves digitais');
-            }
-        });
-
-        function showSuccess(message) {
-            successMsg.textContent = message;
-            successMsg.classList.add('show');
-            setTimeout(() => successMsg.classList.remove('show'), 5000);
-        }
-
-        function showError(message) {
-            errorMsg.textContent = message;
-            errorMsg.classList.add('show');
-            setTimeout(() => errorMsg.classList.remove('show'), 5000);
-        }
-    </script>
-</body>
+    } catch (error) {
+      showError('❌ Erro de conexão com o servidor');
+      console.error(error);
+    }
 </html>
