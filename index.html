@@ -648,42 +648,56 @@
     </footer>
 
     <script>
-        const form = document.getElementById('registrationForm');
-        const successMsg = document.getElementById('successMessage');
-        const errorMsg = document.getElementById('errorMessage');
+        <script>
+  const form = document.getElementById('registrationForm');
+  const successMsg = document.getElementById('successMessage');
+  const errorMsg = document.getElementById('errorMessage');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Clear messages
-            successMsg.classList.remove('show');
-            errorMsg.classList.remove('show');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // NUNCA recarrega a página
 
-           const formData = new FormData(form);
-    const data = {
-      name: formData.get('name') || formData.get('fullName') || 'Hóspede',
-      phone: formData.get('phone') || formData.get('phone-number') || ''
-    };
+      successMsg?.classList.remove('show');
+      errorMsg?.classList.remove('show');
 
-    try {
-      // Chamando o seu backend real no Render
-      const response = await fetch('https://provisioon-backend-1.onrender.com/api/register-guest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      const fd = new FormData(form);
 
-      if (response.ok) {
-        showSuccess('✅ Chave digital enviada com sucesso por SMS!');
-        form.reset();
-      } else {
-        const errorData = await response.json();
-        showError('❌ Erro: ' + (errorData.error || 'Falha no envio'));
+      const name = fd.get('name') || 'Hóspede';
+
+      // Coleta todos os emails e telefones preenchidos
+      const emails = ['email1','email2','email3']
+        .map(k => fd.get(k))
+        .filter(v => v && v.trim() !== '');
+
+      const phones = ['phone1','phone2','phone3']
+        .map(k => fd.get(k))
+        .filter(v => v && v.trim() !== '');
+
+      if (phones.length === 0 && emails.length === 0) {
+        errorMsg.textContent = 'Preencha pelo menos um email ou telefone';
+        errorMsg.classList.add('show');
+        return;
       }
-    } catch (error) {
-      showError('❌ Erro de conexão com o servidor');
-      console.error(error);
-    }
-</html>
+
+      try {
+        const r = await fetch(
+          'https://provisioon-backend-1.onrender.com/api/register-guest',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, emails, phones })
+          }
+        );
+
+        if (!r.ok) throw new Error('Falha no envio');
+
+        successMsg.textContent = '✅ Chave enviada para os hóspedes';
+        successMsg.classList.add('show');
+        form.reset();
+      } catch (err) {
+        errorMsg.textContent = '❌ Erro ao enviar chaves';
+        errorMsg.classList.add('show');
+      }
+    });
+  }
+</script>
