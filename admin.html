@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROVISIOON - Painel Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #001a33 0%, #003d66 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 40px;
+        }
+        
+        h1 {
+            color: #001a33;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .login-section {
+            display: block;
+        }
+        
+        .admin-section {
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .logout-btn {
+            background: #ff6b6b;
+            margin-top: 20px;
+        }
+        
+        .logout-btn:hover {
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .admin-header h2 {
+            color: #001a33;
+            font-size: 24px;
+        }
+        
+        .user-info {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SEÇÃO DE LOGIN -->
+        <div class="login-section" id="loginSection">
+            <div class="logo">🔐</div>
+            <h1>PROVISIOON</h1>
+            <p class="subtitle">Painel de Administração</p>
+            
+            <div class="message" id="loginMessage"></div>
+            
+            <div class="form-group">
+                <label for="password">Senha de Acesso:</label>
+                <input type="password" id="password" placeholder="Digite sua senha">
+            </div>
+            
+            <button onclick="fazerLogin()">Entrar</button>
+        </div>
+        
+        <!-- SEÇÃO DE ADMIN -->
+        <div class="admin-section" id="adminSection">
+            <div class="admin-header">
+                <h2>Gerar Chave</h2>
+                <div class="user-info">
+                    Logado como: <strong>Admin</strong>
+                </div>
+            </div>
+            
+            <div class="message" id="adminMessage"></div>
+            
+            <div class="form-group">
+                <label for="guestName">Nome do Hóspede:</label>
+                <input type="text" id="guestName" placeholder="Ex: João Silva">
+            </div>
+            
+            <div class="form-group">
+                <label for="guestEmail">E-mail do Hóspede:</label>
+                <input type="email" id="guestEmail" placeholder="Ex: joao@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="guestPhone">Telefone (com WhatsApp):</label>
+                <input type="tel" id="guestPhone" placeholder="Ex: +55 11 99999-9999">
+            </div>
+            
+            <div class="form-group">
+                <label for="roomNumber">Número do Quarto:</label>
+                <input type="text" id="roomNumber" placeholder="Ex: 204">
+            </div>
+            
+            <div class="loading" id="loading">⏳ Enviando chave...</div>
+            
+            <button onclick="gerarChave()">Gerar e Enviar Chave</button>
+            
+            <button class="logout-btn" onclick="fazerLogout()">Sair</button>
+        </div>
+    </div>
+    
+    <script>
+        // SENHA PADRÃO (você pode mudar depois)
+        const SENHA_CORRETA = "provisioon123";
+        
+        // URL do seu backend
+        const BACKEND_URL = "https://provisioon-site-production.up.railway.app";
+        
+        function fazerLogin() {
+            const senha = document.getElementById("password").value;
+            const mensagem = document.getElementById("loginMessage");
+            
+            if (senha === SENHA_CORRETA) {
+                // Login bem-sucedido
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("adminSection").style.display = "block";
+                localStorage.setItem("provisioonAdmin", "true");
+                mensagem.textContent = "";
+            } else {
+                // Senha incorreta
+                mensagem.className = "message error";
+                mensagem.textContent = "❌ Senha incorreta!";
+            }
+        }
+        
+        function fazerLogout() {
+            localStorage.removeItem("provisioonAdmin");
+            document.getElementById("adminSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+            document.getElementById("password").value = "";
+            document.getElementById("adminMessage").textContent = "";
+        }
+        
+        async function gerarChave() {
+            const nome = document.getElementById("guestName").value;
+            const email = document.getElementById("guestEmail").value;
+            const telefone = document.getElementById("guestPhone").value;
+            const quarto = document.getElementById("roomNumber").value;
+            const mensagem = document.getElementById("adminMessage");
+            const loading = document.getElementById("loading");
+            
+            // Validação
+            if (!nome || !email || !quarto) {
+                mensagem.className = "message error";
+                mensagem.textContent = "❌ Preencha todos os campos obrigatórios!";
+                return;
+            }
+            
+            loading.style.display = "block";
+            mensagem.textContent = "";
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/send-key`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: nome,
+                        email: email,
+                        phone: telefone || null,
+                        room: quarto
+                    })
+                });
+                
+                const data = await response.json();
+                
+                loading.style.display = "none";
+                
+                if (data.success) {
+                    mensagem.className = "message success";
+                    mensagem.textContent = "✅ Chave enviada com sucesso!";
+                    
+                    // Limpar formulário
+                    document.getElementById("guestName").value = "";
+                    document.getElementById("guestEmail").value = "";
+                    document.getElementById("guestPhone").value = "";
+                    document.getElementById("roomNumber").value = "";
+                } else {
+                    mensagem.className = "message error";
+                    mensagem.textContent = "❌ Erro ao enviar chave: " + data.message;
+                }
+            } catch (error) {
+                loading.style.display = "none";
+                mensagem.className = "message error";
+                mensagem.textContent = "❌ Erro de conexão com o servidor!";
+                console.error(error);
+            }
+        }
+        
+        // Verificar se já está logado
+        window.addEventListener("load", function() {
+            if (localStorage.getItem("provisioonAdmin") === "true") {
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("adminSection").style.display = "block";
+            }
+        });
+        
+        // Permitir Enter para fazer login
+        document.addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && document.getElementById("loginSection").style.display !== "none") {
+                fazerLogin();
+            }
+        });
+    </script>
+</body>
+</html>
