@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const sgMail = require('@sendgrid/mail');
 const twilio = require('twilio');
 const cors = require('cors');
@@ -8,13 +9,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Configuração SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Servir arquivos estáticos
+app.use(express.static(__dirname));
 
-// Configuração Twilio
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+// ROTA PARA ABRIR O PAINEL ADMIN
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
 
-app.get('/', (req, res) => res.send('Servidor PROVISIOON Online! 🔑'));
+// ROTA PARA ABRIR A PÁGINA INICIAL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // ROTA PARA ENVIAR CHAVE (E-mail e SMS)
 app.post('/api/send-key', async (req, res) => {
@@ -22,7 +28,6 @@ app.post('/api/send-key', async (req, res) => {
     const keyUrl = `https://provisioon.com/key.html?room=${room}`;
 
     try {
-        // 1. Enviar E-mail via SendGrid
         const msg = {
             to: email,
             from: 'noreply@provisioon.com',
@@ -31,7 +36,6 @@ app.post('/api/send-key', async (req, res) => {
         };
         await sgMail.send(msg);
 
-        // 2. Enviar SMS via Twilio (Só funcionará após aprovação de quarta-feira)
         if (phone) {
             await twilioClient.messages.create({
                 body: `PROVISIOON: Ola ${name}! Sua chave para o quarto ${room} esta pronta: ${keyUrl}`,
@@ -39,11 +43,9 @@ app.post('/api/send-key', async (req, res) => {
                 to: phone
             });
         }
-
-        res.status(200).json({ success: true, message: 'Chave enviada com sucesso!' });
+        res.status(200).json({ success: true, message: 'Chave enviada!' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Erro ao enviar chave.' });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
