@@ -25,7 +25,7 @@ app.post('/api/send-key', async (req, res) => {
     try {
         const msg = {
             to: email,
-            from: 'noreply@provisioon.com',
+            from: jeffersonzancousa@gmail.com,
             subject: '🔑 Sua Chave Digital PROVISIOON',
             html: `<h2>Olá ${name}!</h2><p>Sua chave para o quarto ${room} está pronta.</p><a href="${keyUrl}" style="background:#00d4ff;color:white;padding:15px;text-decoration:none;border-radius:5px;display:inline-block;">ABRIR PORTA</a>`
         };
