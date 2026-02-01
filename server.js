@@ -25,7 +25,10 @@ app.post('/api/send-key', async (req, res) => {
         // 1. Enviar E-mail (Remetente oficial)
         const msg = {
             to: email,
-            from: 'noreply@provisioon.com', 
+            from: {
+                email: 'keys@provisioon.com',
+                name: '🔑 PROVISIOON'
+            },
             subject: '🔑 Sua Chave Digital PROVISIOON',
             html: `
                 <div style="font-family:sans-serif; max-width:500px; margin:auto; border:1px solid #eee; padding:20px; border-radius:10px;">
