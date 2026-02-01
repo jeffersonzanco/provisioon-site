@@ -9,20 +9,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Servir arquivos estáticos
 app.use(express.static(__dirname));
 
-// ROTA PARA ABRIR O PAINEL ADMIN
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
-});
+// CONFIGURAÇÃO SEGURA: Busca as chaves das variáveis do Railway
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-// ROTA PARA ABRIR A PÁGINA INICIAL
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
-// ROTA PARA ENVIAR CHAVE (E-mail e SMS)
 app.post('/api/send-key', async (req, res) => {
     const { name, email, phone, room } = req.body;
     const keyUrl = `https://provisioon.com/key.html?room=${room}`;
@@ -35,17 +30,10 @@ app.post('/api/send-key', async (req, res) => {
             html: `<h2>Olá ${name}!</h2><p>Sua chave para o quarto ${room} está pronta.</p><a href="${keyUrl}" style="background:#00d4ff;color:white;padding:15px;text-decoration:none;border-radius:5px;display:inline-block;">ABRIR PORTA</a>`
         };
         await sgMail.send(msg);
-
-        if (phone) {
-            await twilioClient.messages.create({
-                body: `PROVISIOON: Ola ${name}! Sua chave para o quarto ${room} esta pronta: ${keyUrl}`,
-                from: process.env.TWILIO_PHONE_NUMBER,
-                to: phone
-            });
-        }
         res.status(200).json({ success: true, message: 'Chave enviada!' });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('Erro detalhado:', error.response ? error.response.body : error);
+        res.status(500).json({ success: false, message: 'Erro: ' + (error.message || 'Unauthorized') });
     }
 });
 
